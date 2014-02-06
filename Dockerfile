@@ -12,7 +12,11 @@ RUN echo "root:josh" | chpasswd
 
 RUN apt-get -y install autoconf automake build-essential
 RUN apt-get -y install mercurial git cvs
-RUN apt-get -y install bzr cmake unzip unrar p7zip-full
+#RUN apt-get -y install software-properties-common
+#RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
+#RUN apt-cache policy unrar
+#RUN apt-get update && apt-get -y install ubuntu-restricted-extras
+RUN apt-get -y install bzr cmake unzip unrar-free p7zip-full
 
 
 RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
