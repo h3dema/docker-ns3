@@ -18,7 +18,8 @@ RUN apt-get -y install mercurial git cvs
 #RUN apt-cache policy unrar
 #RUN apt-get update && apt-get -y install ubuntu-restricted-extras
 RUN apt-get -y install bzr cmake unzip unrar-free p7zip-full
-RUN apt-get -y install qt4-qmake qt4-dev-tools python-dev python-pygoocanvas python-pygraphviz
+RUN apt-get -y install qt4-qmake qt4-dev-tools python-dev python-pygoocanvas python-pygraphviz pip
+RUN pip install -e "bzr+https://code.launchpad.net/~gjc/pybindgen/trunk#egg=pybindgen"
 #RUN pip install PyBindGen
 #http://www.nsnam.org/wiki/NetAnim
 
