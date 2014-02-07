@@ -29,7 +29,7 @@ RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
 RUN cd /workspace/bake && ./bake.py configure -e ns-3.18.1
 RUN cd /workspace/bake && ./bake.py check
 RUN cd /workspace/bake && ./bake.py download
-RUN cd /workspace/bake && ./bake.py build --debug
+RUN cd /workspace/bake && ./bake.py build
 RUN cd /workspace/bake/source/ns-3.18.1 && ./test.py -c core
 RUN cd /workspace/bake/source/ns-3.18.1 && ./waf --run hello-simulator
 
