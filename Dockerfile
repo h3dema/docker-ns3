@@ -37,7 +37,7 @@ RUN apt-get -y install bzr cmake unzip unrar-free p7zip-full
 RUN apt-get -y install qt4-qmake qt4-dev-tools python-dev python-pygoocanvas python-pygraphviz
 RUN cd /tmp && wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py && python get-pip.py
 RUN pip install -e "bzr+https://code.launchpad.net/~gjc/pybindgen/trunk#egg=pybindgen"
-RUN apt-get install gccxml python-pygccxml
+RUN apt-get -y install gccxml python-pygccxml
 #http://www.nsnam.org/wiki/NetAnim
 
 
