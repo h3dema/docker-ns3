@@ -29,4 +29,4 @@ RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
 
 ADD ns3build.sh /ns3build.sh
 
-RUN cd / && ./ns3build.sh
+RUN cd / && /bin/bash ./ns3build.sh
