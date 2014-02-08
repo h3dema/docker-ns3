@@ -5,6 +5,22 @@ RUN apt-get update && apt-get -y install python-software-properties software-pro
 RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
 RUN apt-get update
 RUN apt-get -y install bash bridge-utils ebtables iproute libev4 libev-dev python
+RUN apt-get -y install gcc g++ gdb valgrind
+RUN apt-get -y install gsl-bin libgsl0-dev libgsl0ldbl
+RUN apt-get -y install flex bison libfl-dev
+#RUN apt-get -y install g++-3.4 gcc-3.4
+RUN apt-get -y install tcpdump
+RUN apt-get -y install sqlite sqlite3 libsqlite3-dev
+RUN apt-get -y install  libxml2 libxml2-dev
+#RUN apt-get -y install libgtk2.0-0 libgtk2.0-dev
+RUN apt-get -y install uncrustify
+RUN apt-get -y install doxygen graphviz imagemagick
+RUN apt-get -y install texlive texlive-extra-utils texlive-latex-extra
+RUN apt-get -y install python-sphinx dia 
+RUN apt-get -y install python-pygraphviz python-kiwi python-pygoocanvas libgoocanvas-dev
+RUN apt-get -y install libboost-signals-dev libboost-filesystem-dev
+RUN apt-get -y install gcc-multilib
+RUN apt-get -y install gccxml
 
 RUN apt-get -y install wget 
 RUN apt-get install -y openssh-server
@@ -21,12 +37,21 @@ RUN apt-get -y install bzr cmake unzip unrar-free p7zip-full
 RUN apt-get -y install qt4-qmake qt4-dev-tools python-dev python-pygoocanvas python-pygraphviz
 RUN cd /tmp && wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py && python get-pip.py
 RUN pip install -e "bzr+https://code.launchpad.net/~gjc/pybindgen/trunk#egg=pybindgen"
+#RUN pip install pygccxml
 RUN apt-get install gccxml
 #http://www.nsnam.org/wiki/NetAnim
 
 
 RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
 
-ADD ns3build.sh /ns3build.sh
+RUN cd /workspace/bake && ./bake.py configure -e ns-3.19
+RUN cd /workspace/bake && ./bake.py check
+#RUN rm -rf /workspace/bake/source/ns-3.19/ 
+RUN cd /workspace/bake && ./bake.py download
+RUN cd /workspace/bake && ./bake.py build
+RUN cd /workspace/bake/source/ns-3.19 && ./test.py -c core
+RUN cd /workspace/bake/source/ns-3.19 && ./waf --run hello-simulator
 
-RUN cd / && /bin/bash ./ns3build.sh
+
+#ADD ns3build.sh /ns3build.sh
+#RUN cd / && /bin/bash ./ns3build.sh
