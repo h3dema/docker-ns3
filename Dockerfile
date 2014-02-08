@@ -48,7 +48,7 @@ RUN cd /workspace/bake && ./bake.py configure -e ns-3.19
 RUN cd /workspace/bake && ./bake.py check
 #RUN rm -rf /workspace/bake/source/ns-3.19/ 
 RUN cd /workspace/bake && ./bake.py download
-RUN cd /workspace/bake && ./bake.py build
+RUN cd /workspace/bake && ./bake.py build -vvv
 RUN cd /workspace/bake/source/ns-3.19 && ./test.py -c core
 RUN cd /workspace/bake/source/ns-3.19 && ./waf --run hello-simulator
 
