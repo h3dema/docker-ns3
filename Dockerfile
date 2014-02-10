@@ -41,6 +41,10 @@ RUN apt-get -y install gccxml python-pygccxml
 #http://www.nsnam.org/wiki/NetAnim
 
 
+RUN dd if=/dev/zero of=/swapfile bs=1M count=2048
+RUN mkswap /swapfile
+RUN swapon /swapfile
+
 RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
 
 RUN cd /workspace/bake && ./bake.py configure -e ns-3.19
