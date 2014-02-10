@@ -43,7 +43,7 @@ RUN apt-get -y install gccxml python-pygccxml
 
 RUN dd if=/dev/zero of=/swapfile bs=1M count=2048
 RUN mkswap /swapfile
-RUN swapon /swapfile
+RUN swapon -a
 
 RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
 
