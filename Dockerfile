@@ -66,3 +66,10 @@ RUN mv /workspace/bake/source/ns-3.19/wscript /workspace/bake/source/ns-3.19/wsc
 RUN mv /workspace/bake/source/ns-3.19/scratch/wscript.txt /workspace/bake/source/ns-3.19/wscript
 RUN mv /wscript.dc /workspace/bake/source/ns-3.19/scratch/wscript
 RUN chmod 755 /workspace/bake/source/ns-3.19/wscript && chmod 755 /workspace/bake/source/ns-3.19/scratch/wscript
+
+RUN apt-get install -y aptitude
+
+RUN cd / && wget http://www.cryptopp.com/cryptopp562.zip 
+RUN mkdir -p /cryptopp && mv /cryptopp562.zip /cryptopp/cryptopp562.zip && cd /cryptopp && unzip cryptopp562.zip
+RUN cd /cryptopp && make -j 4
+RUN cd /cryptopp && make install
