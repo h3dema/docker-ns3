@@ -41,9 +41,9 @@ RUN apt-get -y install gccxml python-pygccxml
 #http://www.nsnam.org/wiki/NetAnim
 
 
-RUN dd if=/dev/zero of=/swapfile bs=1M count=2048
-RUN mkswap /swapfile
-RUN swapon -a
+#RUN dd if=/dev/zero of=/swapfile bs=1M count=2048
+#RUN mkswap /swapfile
+#RUN swapon -a
 
 RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
 
@@ -56,5 +56,13 @@ RUN cd /workspace/bake/source/ns-3.19 && ./test.py -c core
 RUN cd /workspace/bake/source/ns-3.19 && ./waf --run hello-simulator
 
 
-#ADD ns3build.sh /ns3build.sh
-#RUN cd / && /bin/bash ./ns3build.sh
+ADD ns3build.sh /ns3build.sh
+RUN cd / && /bin/bash ./ns3build.sh
+
+ADD wscript.dc /wscript.dc
+RUN cd /tmp && git clone https://github.com/aravindanbalan/Projects.git
+RUN cp -R /tmp/Projects/* /workspace/bake/source/ns-3.19/scratch
+RUN mv /workspace/bake/source/ns-3.19/wscript /workspace/bake/source/ns-3.19/wscript.orig
+RUN mv /workspace/bake/source/ns-3.19/scratch/wscript.txt /workspace/bake/source/ns-3.19/wscript
+RUN mv /wscript.dc /workspace/bake/source/ns-3.19/scratch/wscript
+RUN chmod 755 /workspace/bake/source/ns-3.19/wscript && chmod 755 /workspace/bake/source/ns-3.19/scratch/wscript
