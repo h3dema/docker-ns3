@@ -78,3 +78,8 @@ RUN cd /tmp/Projects && git pull
 RUN cp /tmp/Projects/wscript.txt /workspace/bake/source/ns-3.19/wscript
 RUN cd /tmp/Projects && git pull && cp -R /tmp/Projects/* /workspace/bake/source/ns-3.19/scratch
 RUN cd /workspace/bake/source/ns-3.19 && ./waf --run scratch/SendPacket
+RUN cd /tmp && wget https://2.na.dl.wireshark.org/src/wireshark-1.10.5.tar.bz2
+RUN cd /tmp && tar -xvf wireshark-1.10.5.tar.bz2
+RUN apt-get install -y checkinstall libpcap-dev
+RUN cd /tmp/wireshark-1.10.5 && ./configure && make -j 5 
+RUN cd /tmp/wireshark-1.10.5 && make install
