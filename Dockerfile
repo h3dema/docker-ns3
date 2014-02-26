@@ -73,3 +73,8 @@ RUN cd / && wget http://www.cryptopp.com/cryptopp562.zip
 RUN mkdir -p /cryptopp && mv /cryptopp562.zip /cryptopp/cryptopp562.zip && cd /cryptopp && unzip cryptopp562.zip
 RUN cd /cryptopp && make -j 4
 RUN cd /cryptopp && make install
+RUN fakeroot apt-get install -y crypto++
+RUN cd /tmp/Projects && git pull 
+RUN cp /tmp/Projects/wscript.txt /workspace/bake/source/ns-3.19/wscript
+RUN cd /tmp/Projects && git pull && cp -R /tmp/Projects/* /workspace/bake/source/ns-3.19/scratch
+RUN cd /workspace/bake/source/ns-3.19 && ./waf --run scratch/SendPacket
