@@ -83,3 +83,4 @@ RUN cd /tmp && tar -xvf wireshark-1.10.5.tar.bz2
 RUN apt-get install -y checkinstall libpcap-dev
 RUN cd /tmp/wireshark-1.10.5 && ./configure && make -j 5 
 RUN cd /tmp/wireshark-1.10.5 && make install
+RUN apt-get install astyle
