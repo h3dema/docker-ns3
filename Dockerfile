@@ -36,51 +36,52 @@ RUN apt-get -y install mercurial git cvs
 RUN apt-get -y install bzr cmake unzip unrar-free p7zip-full
 RUN apt-get -y install qt4-qmake qt4-dev-tools python-dev python-pygoocanvas python-pygraphviz
 RUN cd /tmp && wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py && python get-pip.py
-RUN pip install -e "bzr+https://code.launchpad.net/~gjc/pybindgen/trunk#egg=pybindgen"
+#RUN pip install -e "bzr+https://code.launchpad.net/~gjc/pybindgen/trunk#egg=pybindgen"
 RUN apt-get -y install gccxml python-pygccxml
 #http://www.nsnam.org/wiki/NetAnim
 
 
-#RUN dd if=/dev/zero of=/swapfile bs=1M count=2048
-#RUN mkswap /swapfile
-#RUN swapon -a
-
-RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
-
-RUN cd /workspace/bake && ./bake.py configure -e ns-3.19
-RUN cd /workspace/bake && ./bake.py check
-#RUN rm -rf /workspace/bake/source/ns-3.19/ 
-RUN cd /workspace/bake && ./bake.py download
-RUN cd /workspace/bake && ./bake.py build -vvv
-RUN cd /workspace/bake/source/ns-3.19 && ./test.py -c core
-RUN cd /workspace/bake/source/ns-3.19 && ./waf --run hello-simulator
-
-
-ADD ns3build.sh /ns3build.sh
-RUN cd / && /bin/bash ./ns3build.sh
-
-ADD wscript.dc /wscript.dc
-RUN cd /tmp && git clone https://github.com/aravindanbalan/Projects.git
-RUN cp -R /tmp/Projects/* /workspace/bake/source/ns-3.19/scratch
-RUN mv /workspace/bake/source/ns-3.19/wscript /workspace/bake/source/ns-3.19/wscript.orig
-RUN mv /workspace/bake/source/ns-3.19/scratch/wscript.txt /workspace/bake/source/ns-3.19/wscript
-RUN mv /wscript.dc /workspace/bake/source/ns-3.19/scratch/wscript
-RUN chmod 755 /workspace/bake/source/ns-3.19/wscript && chmod 755 /workspace/bake/source/ns-3.19/scratch/wscript
+RUN apt-get -y install python-dev python-pygraphviz python-kiwi python-pygoocanvas \
+                     python-gnome2 python-gnomedesktop python-rsvg
 
 RUN apt-get install -y aptitude
+RUN apt-get update && fakeroot apt-get install -y crypto++
+RUN apt-get install -y checkinstall libpcap-dev
+RUN apt-get install astyle
 
+#ns3
+RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
+RUN cd /workspace/bake && ./bake.py configure -e ns-allinone-3.20
+RUN cd /workspace/bake && ./bake.py check
+RUN cd /workspace/bake && ./bake.py download
+RUN cd /workspace/bake && ./bake.py build -vvv
+RUN cd /workspace/bake/source/ns-3.20 && ./test.py -c core
+RUN cd /workspace/bake/source/ns-3.20 && ./waf --run hello-simulator
+
+#project setup
+ADD wscript.dc /wscript.dc
+RUN cd /tmp && git clone https://github.com/aravindanbalan/Projects.git
+RUN cp -R /tmp/Projects/* /workspace/bake/source/ns-3.20/scratch
+RUN mv /workspace/bake/source/ns-3.20/wscript /workspace/bake/source/ns-3.20/wscript.orig
+RUN mv /workspace/bake/source/ns-3.20/scratch/wscript.txt /workspace/bake/source/ns-3.20/wscript
+RUN mv /wscript.dc /workspace/bake/source/ns-3.20/scratch/wscript
+RUN chmod 755 /workspace/bake/source/ns-3.20/wscript && chmod 755 /workspace/bake/source/ns-3.20/scratch/wscript
+
+
+#cryptopp
 RUN cd / && wget http://www.cryptopp.com/cryptopp562.zip 
 RUN mkdir -p /cryptopp && mv /cryptopp562.zip /cryptopp/cryptopp562.zip && cd /cryptopp && unzip cryptopp562.zip
 RUN cd /cryptopp && make -j 4
 RUN cd /cryptopp && make install
-RUN fakeroot apt-get install -y crypto++
+
 RUN cd /tmp/Projects && git pull 
-RUN cp /tmp/Projects/wscript.txt /workspace/bake/source/ns-3.19/wscript
-RUN cd /tmp/Projects && git pull && cp -R /tmp/Projects/* /workspace/bake/source/ns-3.19/scratch
-RUN cd /workspace/bake/source/ns-3.19 && ./waf --run scratch/SendPacket
-RUN cd /tmp && wget https://2.na.dl.wireshark.org/src/wireshark-1.10.5.tar.bz2
-RUN cd /tmp && tar -xvf wireshark-1.10.5.tar.bz2
-RUN apt-get install -y checkinstall libpcap-dev
-RUN cd /tmp/wireshark-1.10.5 && ./configure && make -j 5 
-RUN cd /tmp/wireshark-1.10.5 && make install
-RUN apt-get install astyle
+RUN cp /tmp/Projects/wscript.txt /workspace/bake/source/ns-3.20/wscript
+RUN cd /tmp/Projects && git pull && cp -R /tmp/Projects/* /workspace/bake/source/ns-3.20/scratch
+RUN cd /workspace/bake/source/ns-3.20 && ./waf --run scratch/SendPacket
+
+#Wireshark
+RUN cd /tmp && wget https://2.na.dl.wireshark.org/src/wireshark-1.10.7.tar.bz2
+RUN cd /tmp && tar -xvf wireshark-1.10.7.tar.bz2
+RUN cd /tmp/wireshark-1.10.7 && ./configure && make -j 5 
+RUN cd /tmp/wireshark-1.10.7 && make install
+
