@@ -10,7 +10,7 @@ RUN apt-get -y install apt-fast
 
 RUN apt-fast -y install bash bridge-utils ebtables iproute libev4 libev-dev python
 RUN apt-fast -y install gcc g++ gdb valgrind
-RUN apt-fast -y install gsl-bin libgsl0-dev libgsl0ldbl
+RUN apt-fast -y install gsl-bin libgsl0-dev
 RUN apt-fast -y install flex bison libfl-dev
 RUN apt-fast -y install tcpdump
 RUN apt-fast -y install sqlite sqlite3 libsqlite3-dev
