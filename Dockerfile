@@ -34,7 +34,8 @@ RUN apt-fast -y install autoconf automake build-essential
 RUN apt-fast -y install mercurial git cvs
 RUN apt-fast -y install bzr cmake unzip unrar-free p7zip-full
 RUN apt-fast -y install qt4-qmake qt4-dev-tools python-dev python-pygoocanvas python-pygraphviz
-RUN cd /tmp && wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py && python get-pip.py
+RUN apt-get -y install python-pip
+RUN pip install --upgrade pip
 RUN apt-fast -y install gccxml python-pygccxml
 #http://www.nsnam.org/wiki/NetAnim
 
