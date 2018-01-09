@@ -41,7 +41,7 @@ RUN apt-fast -y install gccxml python-pygccxml
 
 
 RUN apt-fast -y install python-dev python-pygraphviz python-kiwi python-pygoocanvas \
-                     python-gnome2 python-gnomedesktop python-rsvg
+                     python-gnome2 python-rsvg
 
 RUN apt-fast install -y aptitude
 RUN apt-fast install -y checkinstall libpcap-dev
