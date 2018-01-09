@@ -47,7 +47,7 @@ RUN apt-fast install -y aptitude
 RUN apt-fast install -y checkinstall libpcap-dev
 
 #ns3
-RUN cd && mkdir workspace && cd workspace && hg clone http://code.nsnam.org/bake
+RUN mkdir /workspace && cd /workspace && hg clone http://code.nsnam.org/bake
 RUN cd /workspace/bake && ./bake.py configure -e ns-allinone-3.20
 RUN cd /workspace/bake && ./bake.py check
 RUN cd /workspace/bake && ./bake.py download
