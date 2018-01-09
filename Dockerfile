@@ -1,5 +1,5 @@
-FROM ubuntu:precise
-MAINTAINER joshjdevl < joshjdevl [at] gmail {dot} com>
+FROM ubuntu:16.04
+
 
 RUN apt-get update && apt-get -y install python-software-properties software-properties-common
 RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
