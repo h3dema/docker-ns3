@@ -1,22 +1,34 @@
 # Basic commands for the ns3 docker container
 
+The commands below build, start, and stop a container with ns3 installed.
+They must run in a terminal shell and inside the folder of this repository.
+
 - Build
 
 ```bash
+cd docker-ns3
 docker-compose build
 ```
 
 - Start
 
 ```bash
+cd docker-ns3
 docker-compose up -d
 ```
+
+Starts a container named `ns3` in the background.
 
 - Stop
 
 ```bash
-docker-compose build
+cd docker-ns3
+docker-compose down
 ```
+
+Stops the service. **Every change inside the container is going to be lost**.
+
+---
 
 # Test the installation
 
