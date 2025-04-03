@@ -1,6 +1,6 @@
 # Basic commands for the ns3 docker container
 
-The commands below build, start, and stop a container with ns3 installed.
+The commands below build, start, and stop a container with ns3 (**version 3.44**) installed.
 They must run in a terminal shell and inside the folder of this repository.
 
 - Build
