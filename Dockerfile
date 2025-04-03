@@ -1,88 +1,60 @@
-FROM ubuntu:16.04
+#
+# docker build -t h3dema/ns3:0 -f Dockerfile .
+# docker run -it h3dema/ns3:0
+#
+# FROM wirepas/ns3-docker
+FROM ubuntu:22.04
 
-RUN apt-get update && apt-get -y install python-software-properties software-properties-common
-#RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
-#RUN apt-get update
+# to test
+# ./ns3 configure --build-profile=debug --enable-examples --enable-tests
+# ./ns3 run hello-simulator
+#
+# installation based on
+# https://www.nsnam.org/docs/installation/html/linux.html#requirements
+#
+RUN apt update && apt install -y \
+    g++ \
+    python3 \
+    cmake \
+    ninja-build \
+    git \
+    vim \
+    ccache \
+    clang-format clang-tidy \
+    gdb valgrind
 
-RUN add-apt-repository ppa:apt-fast/stable
-RUN apt-get update
-RUN apt-get -y install apt-fast
+RUN DEBIAN_FRONTEND=noninteractive apt install -y \
+    tcpdump wireshark \
+    sqlite sqlite3 libsqlite3-dev \
+    qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools \
+    doxygen graphviz imagemagick \
+    python3-sphinx dia imagemagick texlive dvipng latexmk texlive-extra-utils texlive-latex-extra texlive-font-utils
 
-RUN apt-fast -y install bash bridge-utils ebtables iproute libev4 libev-dev python
-RUN apt-fast -y install gcc g++ gdb valgrind
-RUN apt-fast -y install gsl-bin libgsl0-dev
-RUN apt-fast -y install flex bison libfl-dev
-RUN apt-fast -y install tcpdump
-RUN apt-fast -y install sqlite sqlite3 libsqlite3-dev
-RUN apt-fast -y install libxml2 libxml2-dev
-RUN apt-fast -y install uncrustify
-RUN apt-fast -y install doxygen graphviz imagemagick
-RUN apt-fast -y install texlive texlive-extra-utils texlive-latex-extra
-RUN apt-fast -y install python-sphinx dia 
-RUN apt-fast -y install python-pygraphviz python-kiwi python-pygoocanvas libgoocanvas-dev
-RUN apt-fast -y install libboost-signals-dev libboost-filesystem-dev
-RUN apt-fast -y install gcc-multilib
-RUN apt-fast -y install gccxml
+RUN apt install -y gsl-bin libgsl-dev libgslcblas0 \
+    libxml2 libxml2-dev \
+    libgtk-3-dev \
+    python3-pip python3-dev python3-setuptools
 
-RUN apt-fast -y install wget 
-RUN apt-fast install -y openssh-server
-RUN mkdir /var/run/sshd
-RUN /usr/sbin/sshd
-RUN echo "root:josh" | chpasswd
+RUN python3 -m pip install --user cppyy==3.1.2
 
-RUN apt-fast -y install autoconf automake build-essential
-RUN apt-fast -y install mercurial git cvs
-RUN apt-fast -y install bzr cmake unzip unrar-free p7zip-full
-RUN apt-fast -y install qt4-qmake qt4-dev-tools python-dev python-pygoocanvas python-pygraphviz
-RUN apt-get -y install python-pip
-RUN pip install --upgrade pip
-RUN apt-fast -y install gccxml python-pygccxml
-#http://www.nsnam.org/wiki/NetAnim
+RUN apt install -y gir1.2-goocanvas-2.0 python3-gi python3-gi-cairo python3-pygraphviz gir1.2-gtk-3.0 ipython3 wget
 
+RUN mkdir -p /usr/ns3 && \
+    cd /usr/ns3 && \
+    wget -c https://www.nsnam.org/releases/ns-allinone-3.44.tar.bz2 && \
+    tar xfj ns-allinone-3.44.tar.bz2 && rm -f ns-allinone-3.44.tar.bz2 && \
+    cd ns-allinone-3.44/ns-3.44 && \
+    echo "export PATH=$PATH:`pwd`" >> /root/.bashrc && \
+    export PATH=$PATH:`pwd` && \
+    echo "alias cdns3='cd `pwd`'" >> /root/.bashrc && \
+    git clone https://gitlab.com/nsnam/ns-3-dev.git && \
+    cd ns-3-dev && git checkout -b ns-3.44-release ns-3.44 && \
+    ns3 configure --enable-examples --enable-tests && \
+    ns3 build
 
-RUN apt-fast -y install python-dev python-pygraphviz python-kiwi python-pygoocanvas \
-                     python-gnome2 python-rsvg
+RUN cd /usr/ns3/ && \
+    git clone https://github.com/imec-idlab/NB-IoT.git && \
+    cd NB-IoT && \
+    git checkout energy_evaluation
 
-RUN apt-fast install -y aptitude
-RUN apt-fast install -y checkinstall libpcap-dev
-
-#ns3
-RUN mkdir /workspace && cd /workspace && hg clone http://code.nsnam.org/bake
-RUN cd /workspace/bake && ./bake.py configure -e ns-allinone-3.20
-RUN cd /workspace/bake && ./bake.py check
-RUN cd /workspace/bake && ./bake.py download
-RUN cd /workspace/bake && ./bake.py build -vvv
-RUN cd /workspace/bake/source/ns-3.20 && ./test.py -c core
-RUN cd /workspace/bake/source/ns-3.20 && ./waf --run hello-simulator
-
-#project setup
-ADD wscript.dc /wscript.dc
-RUN cd /tmp && git clone https://github.com/aravindanbalan/Projects.git
-RUN cp -R /tmp/Projects/* /workspace/bake/source/ns-3.20/scratch
-RUN mv /workspace/bake/source/ns-3.20/wscript /workspace/bake/source/ns-3.20/wscript.orig
-RUN mv /workspace/bake/source/ns-3.20/scratch/wscript.txt /workspace/bake/source/ns-3.20/wscript
-RUN mv /wscript.dc /workspace/bake/source/ns-3.20/scratch/wscript
-RUN chmod 755 /workspace/bake/source/ns-3.20/wscript && chmod 755 /workspace/bake/source/ns-3.20/scratch/wscript
-
-
-#cryptopp
-RUN cd / && wget http://www.cryptopp.com/cryptopp562.zip 
-RUN mkdir -p /cryptopp && mv /cryptopp562.zip /cryptopp/cryptopp562.zip && cd /cryptopp && unzip cryptopp562.zip
-RUN cd /cryptopp && make -j 4
-RUN cd /cryptopp && make install
-
-RUN cd /tmp/Projects && git pull 
-RUN cp /tmp/Projects/wscript.txt /workspace/bake/source/ns-3.20/wscript
-RUN cd /tmp/Projects && git pull && cp -R /tmp/Projects/* /workspace/bake/source/ns-3.20/scratch
-#RUN cd /workspace/bake/source/ns-3.20 && ./waf --run scratch/SendPacket
-
-#Wireshark
-RUN cd /tmp && wget https://2.na.dl.wireshark.org/src/wireshark-1.10.7.tar.bz2
-RUN cd /tmp && tar -xvf wireshark-1.10.7.tar.bz2
-RUN cd /tmp/wireshark-1.10.7 && ./configure && make -j 5 
-RUN cd /tmp/wireshark-1.10.7 && make install
-
-RUN apt-fast -y install astyle vim
-
-RUN cd /tmp/Projects && git pull && git checkout numnodesfix && ./ns3.sh
-RUN cd /workspace/bake/source/ns-3.20 && ./waf --run "scratch/SendPacket --numNodes=3"
+WORKDIR /usr/ns3/ns-allinone-3.44

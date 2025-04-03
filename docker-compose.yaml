@@ -1,0 +1,9 @@
+services:
+  ns3:
+    build:
+      context: .
+    container_name: ns3
+    image: h3dema/ns3
+    ports:
+      - "80:80"
+    command: tail -F anything
